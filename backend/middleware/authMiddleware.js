@@ -6,7 +6,7 @@ const protect= async(req,res, next) => {
     //definir la variable token
     let token
 
-    if(req.header.authorization && req.headers.authorization.startsWith('Bearer')){
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
         try{
             //Obtenfo el token del encabezado de autorizacion
             token = req.headers.authorization.split(' ')[1]

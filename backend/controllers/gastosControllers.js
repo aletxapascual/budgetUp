@@ -32,44 +32,7 @@ const createGasto =asyncHandler( async(req,res)=>{
     res.status(201).json(gasto)
 })
 
-const updateGasto =asyncHandler(async(req,res)=>{
-    const gasto = await Gasto.findById(req.params.id)
-    if (!gasto){
-        res.status(404)
-        throw new Error('Gasto no existe')
-    }
-
-    //Verificamos que el gasto pertenece al usuario loggeado
-    if(gasto.user.toString()!== req.user.id) {
-        res.status(401)
-        throw new Error ('Usuario no autorizado')
-    } else {
-        const gastoUpdated = await Gasto.findByIdAndUpdate(req.params.id, req.body, {new:true})
-        res.status(200).json(gastoUpdated)
-    }
-        
-})
-
-const deleteGasto =asyncHandler( async(req,res)=>{
-    const gasto = await Gasto.findById(req.params.id)
-    if (!gasto){
-        res.status(404)
-        throw new Error('Gasto no existe')
-    }
-
-    //Verificamos que el gasto pertenece al usuario loggeado
-    if(gasto.user.toString()!== req.user.id) {
-        res.status(401)
-        throw new Error ('Usuario no autorizado')
-    } else {
-        await gasto.deleteOne()
-        res.status(200).json({id: req.params.id})
-    }
-})
-
 module.exports={
     getGastos,
-    createGasto,
-    updateGasto,
-    deleteGasto
+    createGasto
 }

@@ -31,44 +31,7 @@ const createIngreso =asyncHandler( async(req,res)=>{
     res.status(201).json(ingreso)
 })
 
-const updateIngreso =asyncHandler(async(req,res)=>{
-    const ingreso = await Ingreso.findById(req.params.id)
-    if (!ingreso){
-        res.status(404)
-        throw new Error('Ingreso no existe')
-    }
-
-    //Verificamos que el ingreso pertenece al usuario loggeado
-    if(ingreso.user.toString()!== req.user.id) {
-        res.status(401)
-        throw new Error ('Usuario no autorizado')
-    } else {
-        const ingresoUpdated = await Ingreso.findByIdAndUpdate(req.params.id, req.body, {new:true})
-        res.status(200).json(ingresoUpdated)
-    }
-        
-})
-
-const deleteIngreso =asyncHandler( async(req,res)=>{
-    const ingreso = await Ingreso.findById(req.params.id)
-    if (!ingreso){
-        res.status(404)
-        throw new Error('Ingreso no existe')
-    }
-
-    //Verificamos que el ingreso pertenece al usuario loggeado
-    if(ingreso.user.toString()!== req.user.id) {
-        res.status(401)
-        throw new Error ('Usuario no autorizado')
-    } else {
-        await ingreso.deleteOne()
-        res.status(200).json({id: req.params.id})
-    }
-})
-
 module.exports={
     getIngresos,
-    createIngreso,
-    updateIngreso,
-    deleteIngreso
+    createIngreso
 }

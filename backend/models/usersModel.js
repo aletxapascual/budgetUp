@@ -14,11 +14,40 @@ const userSchema = mongoose.Schema({
         type:String,
         required : [true, 'Por favor teclea tu contraseña']
     },
-    esAdmin: {
-        type:Boolean,
+    presupuestoMensual: {
+        type: Number,
+        default: 0
+    },
+    moneda: {
+        type: String,
+        default: 'MXN'
+    },
+    esPremium: {
+        type: Boolean,
         default: false
+    },
+    puntos: {
+        type: Number,
+        default: 0
+    },
+    nivel: {
+        type: Number,
+        default: 1
+    },
+    racha: {
+        type: Number,
+        default: 0
+    },
+    ultimaActividad: {
+        type: Date,
+        default: Date.now
+    },
+    insignias: {
+        type: [String],
+        default: []
     }
-
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model('User', userSchema)

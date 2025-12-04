@@ -13,6 +13,13 @@ const login=asyncHandler(async(req,res) => {
             _id: user.id,
             nombre: user.nombre,
             email: user.email,
+            presupuestoMensual: user.presupuestoMensual,
+            moneda: user.moneda,
+            esPremium: user.esPremium,
+            puntos: user.puntos,
+            nivel: user.nivel,
+            racha: user.racha,
+            insignias: user.insignias,
             token: generarToken(user.id)
         })
     } else {
@@ -23,7 +30,7 @@ const login=asyncHandler(async(req,res) => {
 
 
 const register = asyncHandler(async(req, res) => {
-    const {nombre, email, password}= req.body
+    const {nombre, email, password, presupuestoMensual, moneda}= req.body
 
     if(!nombre || !email || !password){
         res.status(400)
@@ -35,7 +42,7 @@ const register = asyncHandler(async(req, res) => {
 
     if (userExiste){
         res.status(400)
-        throw new Error('Es usuario ya existe')
+        throw new Error('Ese usuario ya existe')
     } else {
         //hash
         const salt = await bcrypt.genSalt(10)
@@ -45,7 +52,9 @@ const register = asyncHandler(async(req, res) => {
         const user = await User.create({
             nombre,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            presupuestoMensual: presupuestoMensual || 0,
+            moneda: moneda || 'MXN'
         })
 
         if (user){
@@ -53,7 +62,13 @@ const register = asyncHandler(async(req, res) => {
                 _id: user.id,
                 nombre: user.nombre,
                 email: user.email,
-                password: user.password
+                presupuestoMensual: user.presupuestoMensual,
+                moneda: user.moneda,
+                esPremium: user.esPremium,
+                puntos: user.puntos,
+                nivel: user.nivel,
+                racha: user.racha,
+                token: generarToken(user.id)
             })
         } else {
             res.status(400)
@@ -66,6 +81,31 @@ const data = (req, res) => {
     res.status(200).json(req.user)
 }
 
+const updateProfile = asyncHandler(async(req, res) => {
+    const user = await User.findById(req.user.id)
+
+    if(!user){
+        res.status(404)
+        throw new Error('Usuario no encontrado')
+    }
+
+    const {nombre, presupuestoMensual, moneda} = req.body
+
+    if(nombre) user.nombre = nombre
+    if(presupuestoMensual !== undefined) user.presupuestoMensual = presupuestoMensual
+    if(moneda) user.moneda = moneda
+
+    await user.save()
+
+    res.status(200).json({
+        _id: user.id,
+        nombre: user.nombre,
+        email: user.email,
+        presupuestoMensual: user.presupuestoMensual,
+        moneda: user.moneda
+    })
+})
+
 const generarToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET,{
         expiresIn:'30d'
@@ -73,5 +113,5 @@ const generarToken = (id) => {
 }
 
 module.exports = {
-    login, register, data
+    login, register, data, updateProfile
 }

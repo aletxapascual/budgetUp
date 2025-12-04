@@ -81,30 +81,6 @@ const data = (req, res) => {
     res.status(200).json(req.user)
 }
 
-const updateProfile = asyncHandler(async(req, res) => {
-    const user = await User.findById(req.user.id)
-
-    if(!user){
-        res.status(404)
-        throw new Error('Usuario no encontrado')
-    }
-
-    const {nombre, presupuestoMensual, moneda} = req.body
-
-    if(nombre) user.nombre = nombre
-    if(presupuestoMensual !== undefined) user.presupuestoMensual = presupuestoMensual
-    if(moneda) user.moneda = moneda
-
-    await user.save()
-
-    res.status(200).json({
-        _id: user.id,
-        nombre: user.nombre,
-        email: user.email,
-        presupuestoMensual: user.presupuestoMensual,
-        moneda: user.moneda
-    })
-})
 
 const generarToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET,{
@@ -113,5 +89,5 @@ const generarToken = (id) => {
 }
 
 module.exports = {
-    login, register, data, updateProfile
+    login, register, data
 }

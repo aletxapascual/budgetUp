@@ -8,7 +8,7 @@ const protect= async(req,res, next) => {
 
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
         try{
-            //Obtenfo el token del encabezado de autorizacion
+            //Obtengo el token del encabezado de autorizacion
             token = req.headers.authorization.split(' ')[1]
             //Verifico el token con la firma del secreto
             const decoded = jwt.verify(token,process.env.JWT_SECRET)
@@ -18,8 +18,8 @@ const protect= async(req,res, next) => {
 
             next()
         
-        }catch {error} {
-            console.log(e)
+        }catch (error) {
+            console.log(error)
             res.status(401)
             throw new Error('Acceso no autorizado')
         }
@@ -32,4 +32,10 @@ const protect= async(req,res, next) => {
     
 }
 
-module.exports = {protect}
+const generarToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET,{
+        expiresIn:'30d'
+    })
+}
+
+module.exports = {protect, generarToken}

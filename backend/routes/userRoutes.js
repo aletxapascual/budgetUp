@@ -9,6 +9,5 @@ router.post('/register', register)
 
 //endpoints privados
 router.get('/data', protect, data)
-router.put('/profile', protect, updateProfile)
 
 module.exports = router
